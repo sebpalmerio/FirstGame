@@ -1,0 +1,49 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 10</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+
+const gameState = {}
+
+let config = {
+    type: Phaser.AUTO,
+    width:1280,
+    height: 475,
+    backgroundColor: 0x313638,
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+}
+
+const game = new Phaser.Game(config)
+
+function preload() {
+    this.load.image('forest_bg', 'assets/forest_bg.jpg')
+}
+
+function create() {
+    this.add.image(640,235,'forest_bg')
+} 
+
+function update() {
+
+}
+
+</script>
+
+</body>
+</html>
