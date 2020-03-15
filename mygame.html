@@ -34,16 +34,18 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-function preload ()
+function preload()
 {
     this.load.image('forest', 'assets/forest_bg.jpg');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('player', 'assets/player2.png', { frameWidth: 100, frameHeight: 168});
+    this.load.spritesheet('player', 'assets/player.png', { frameWidth: 100, frameHeight: 168});
+    this.load.spritesheet('zombie1', 'assets/zombie1.png', { frameWidth: 60, frameHeight: 100});
+    this.load.spritesheet('zombie2', 'assets/zombie2.png', { frameWidth: 67, frameHeight: 100});
 }
 
-function create ()
+function create()
 {
     //  Background
     this.add.image(640, 235, 'forest');
@@ -51,13 +53,20 @@ function create ()
     player = this.physics.add.sprite(50, 475, 'player');
     player.setCollideWorldBounds(true);
 
+    zombie1 = this.physics.add.sprite(100, 475, 'zombie1');
+    zombie1.setCollideWorldBounds(true);
+
+    zombie2 = this.physics.add.sprite(0, 475, 'zombie2');
+    zombie2.setCollideWorldBounds(true);
+
+
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
 
 }
 
-function update () {
+function update() {
 
     if (cursors.left.isDown) {
         player.setVelocityX(-250);
