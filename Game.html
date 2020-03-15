@@ -15,8 +15,6 @@
 <script type="text/javascript">
 
 
-const gameState = {}
-
 let config = {
     type: Phaser.AUTO,
     width: 1280,
@@ -25,7 +23,7 @@ let config = {
     physics: {
             default: 'arcade',
             arcade: {
-                gravity: { y: 300 },
+                gravity: { y: 1800 },
                 debug: false
             }
         },
@@ -40,19 +38,42 @@ const game = new Phaser.Game(config)
 
 function preload() {
     this.load.image('forest_bg', 'assets/forest_bg.jpg')
-    this.load.spritesheet('guy', 'assets/main_player.png', { frameWidth: 150, frameHeight: 252 })
+    this.load.spritesheet('guy', 'assets/main_player_smaller.png', { frameWidth: 59, frameHeight: 100 })
+    this.load.spritesheet('zombie1', 'assets/zombie1.png', { frameWidth: 60, frameHeight: 100 })
+    this.load.spritesheet('zombie2', 'assets/zombie2.png', { frameWidth: 67, frameHeight: 100 })
 }
 
 function create() {
     this.add.image(640,235,'forest_bg')
 
-    player = this.physics.add.sprite(100,100,'guy')
-   // this.add.spritesheet(0, 0, 'guy')
+    player = this.physics.add.sprite(50,10,'guy')
+    zombie1 = this.physics.add.sprite(200,100,'zombie1')
+    zombie2 = this.physics.add.sprite(300,100,'zombie2')
+
+   player.setCollideWorldBounds(true)
+   zombie1.setCollideWorldBounds(true)
+   zombie2.setCollideWorldBounds(true)
+
+   cursors = this.input.keyboard.createCursorKeys()
+
+   //this.physics.add.collider(player, platforms);
 } 
 
 function update() {
+    if (cursors.right.isDown) {
+        player.setVelocityX(250)
+    }
+    else if (cursors.left.isDown) {
+        player.setVelocityX(-250)
+    } else {
+        player.setVelocityX(0)
+    }
 
+    if (cursors.up.isDown && player.body.blocked.down) {
+        player.setVelocityY(-750)
+    }
 }
+
 
 </script>
 
