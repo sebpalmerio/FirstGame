@@ -21,7 +21,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 1800 },
             debug: false
         }
     },
@@ -40,17 +40,43 @@ function preload ()
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.spritesheet('player', 'assets/player2.png', { frameWidth: 100, frameHeight: 168});
 }
 
 function create ()
 {
-    //  A simple background for our game
+    //  Background
     this.add.image(640, 235, 'forest');
+
+    player = this.physics.add.sprite(50, 475, 'player');
+    player.setCollideWorldBounds(true);
+
+    //  Input Events
+    cursors = this.input.keyboard.createCursorKeys();
+
+
 }
 
-function update ()
-{
+function update () {
+
+    if (cursors.left.isDown) {
+        player.setVelocityX(-250);
+    }
+
+    else if (cursors.right.isDown) {   
+        player.setVelocityX(250);
+    }
+
+    else {
+        player.setVelocityX(0);
+    }
+
+
+    if (cursors.up.isDown && player.body.blocked.down) {
+        player.setVelocityY(-750);
+
+
+    }
 }
 
 </script>
