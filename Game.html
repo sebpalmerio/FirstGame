@@ -149,6 +149,7 @@ function update() {
     if (gameOver) {
         console.log("game over")
         player.setTint(0x00ff00);
+       // this.add.rectangle(200, 400, 148, 148, 0xff6699)
         this.add.text(450, 200, "GAME OVER", { font: '65px Arial', fill: "#ff0044"})
         this.add.text(510, 270, "your ending score is " + score, { font: '24px Arial', fill: "#313638"})
         this.physics.pause()
