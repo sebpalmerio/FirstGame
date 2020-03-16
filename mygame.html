@@ -14,6 +14,9 @@
 
 <script type="text/javascript">
 
+var livesLeft = 3
+var score = 0
+
 var config = {
     type: Phaser.AUTO,
     width: 1280,
@@ -47,33 +50,35 @@ function preload()
 
 function create()
 {
-    //  Background
     this.add.image(640, 235, 'forest');
+    livesText = this.add.text(40, 20, "lives left: " + livesLeft);
+    scoreText = this.add.text(1150, 20, "score: " + score);
+
 
     player = this.physics.add.sprite(50, 475, 'player');
     player.setCollideWorldBounds(true);
 
-    zombie1 = this.physics.add.sprite(100, 475, 'zombie1');
+    zombie1 = this.physics.add.sprite(1300, 475, 'zombie1');
     zombie1.setCollideWorldBounds(true);
 
-    zombie2 = this.physics.add.sprite(0, 475, 'zombie2');
+    zombie2 = this.physics.add.sprite(600, 475, 'zombie2');
     zombie2.setCollideWorldBounds(true);
 
+    this.physics.add.collider(player, zombie1, death, null, this);
+    this.physics.add.collider(player, zombie2, death, null, this);
 
-    //  Input Events
+
     cursors = this.input.keyboard.createCursorKeys();
-
-
 }
 
 function update() {
 
     if (cursors.left.isDown) {
-        player.setVelocityX(-250);
+        player.setVelocityX(-275);
     }
 
     else if (cursors.right.isDown) {   
-        player.setVelocityX(250);
+        player.setVelocityX(275);
     }
 
     else {
@@ -82,10 +87,33 @@ function update() {
 
 
     if (cursors.up.isDown && player.body.blocked.down) {
-        player.setVelocityY(-750);
-
+        player.setVelocityY(-850);
 
     }
+
+    // Chase Function
+    if (player.x < zombie1.x) {
+        zombie1.setVelocityX(-120);
+    } else if (player.x > zombie1.x) {
+        zombie1.setVelocityX(120);
+    }
+
+    if (player.x < zombie2.x) {
+        zombie2.setVelocityX(-90);
+    } else if (player.x > zombie2.x) {
+        zombie2.setVelocityX(90);
+    }    
+}
+
+function death(){
+    livesLeft -= 1;
+    livesText.setText("lives left: " + livesLeft);
+    player.setTint(0xff0000);
+    
+    player.setX(640);
+    player.setY(0);
+
+
 }
 
 </script>
