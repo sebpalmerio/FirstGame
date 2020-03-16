@@ -17,6 +17,7 @@
 
 var livesLeft = 3
 var score = 0
+gameOver = false
 
 let config = {
     type: Phaser.AUTO,
@@ -44,17 +45,31 @@ function preload() {
     this.load.spritesheet('guy', 'assets/main_player_smaller.png', { frameWidth: 59, frameHeight: 100 })
     this.load.spritesheet('zombie1', 'assets/zombie1.png', { frameWidth: 60, frameHeight: 100 })
     this.load.spritesheet('zombie2', 'assets/zombie2.png', { frameWidth: 67, frameHeight: 100 })
+    this.load.image('platform', 'assets/platform.png', { frameWidth: 200, frameHeight: 16 })
 }
 
 function create() {
-    this.add.image(640,235,'forest_bg')
-    this.add.text(40, 20, "lives left: " + livesLeft)
-    this.add.text(1150, 20, "score: " + score)
+   // new Timer(game)
+
+    this.add.image(640, 235, 'forest_bg')
+    livesText = this.add.text(40, 20, "lives left: " + livesLeft)
+    scoreText = this.add.text(1150, 20, "score: " + score)
 
     zombie1 = this.physics.add.sprite(1300,100,'zombie1')
     zombie2 = this.physics.add.sprite(600,100,'zombie2')
     player = this.physics.add.sprite(50,10,'guy')
-   
+
+
+    platforms = this.physics.add.staticGroup();
+
+    //  Here we create the ground.
+    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+    platforms.create(400, 568, 'platform').setScale(2).refreshBody();
+
+    //  Now let's create some ledges
+    platforms.create(600, 400, 'platform');
+    platforms.create(50, 250, 'platform');
+    platforms.create(750, 220, 'platform');
 
    player.setCollideWorldBounds(true)
    zombie1.setCollideWorldBounds(true)
@@ -62,11 +77,58 @@ function create() {
 
    cursors = this.input.keyboard.createCursorKeys()
 
-   //this.physics.add.collider(player, platforms);
-  // console.log(player.width)
+   this.physics.add.collider(player,platforms)
+
+   this.physics.add.collider(player, zombie1, zombieBites, null, this);
+   this.physics.add.collider(player, zombie2, zombieBites, null, this);
 } 
 
+function zombieChase(zombie, speed) {
+    if (player.x < zombie.x) {
+        zombie.setVelocityX(-speed)
+    } else if (player.x > zombie.x) {
+        zombie.setVelocityX(speed)
+    } else {
+        zombie.setVelocityX(0)
+    }
+}
+
+function removeText(text) {
+    text.destroy
+}
+
+function zombieBites () {
+    this.physics.pause();
+    livesLeft -= 1
+    score -= 100
+
+    player.setTint(0xff0000);
+
+    if (livesLeft < 0) {
+        gameOver = true
+        this.physics.resume()
+        return
+    }
+
+    livesText.setText("lives left: " + livesLeft)
+    scoreText.setText("score :" + score);
+    warningText = this.add.text(600, 20, "You've been bitten!")
+
+    // here we have timer for 2 sec
+    warningText.destroy()
+    player.clearTint()
+
+    this.physics.resume()
+    player.x = 30
+    player.y = 0
+
+    // this.time.events.add(5000, this.instructions.destroy, this.warningText);
+
+    //setTimeout(removeText(warningText), 1000)
+}
+
 function update() {
+
     // controls for player
     if (cursors.right.isDown) {
         player.setVelocityX(250)
@@ -77,26 +139,23 @@ function update() {
         player.setVelocityX(0)
     }
     if (cursors.up.isDown && player.body.blocked.down) {
-        player.setVelocityY(-750)
+        player.setVelocityY(-1000)
     }
 
     // move zombies towards player
-    if (player.x < zombie1.x) {
-        zombie1.setVelocityX(-10)
-    } else if (player.x > zombie1.x) {
-        zombie1.setVelocityX(10)
-    }
+    zombieChase(zombie1, 100)
+    zombieChase(zombie2, 90)
 
-    if (player.x < zombie2.x) {
-        zombie2.setVelocityX(-10)
-    } else if (player.x > zombie2.x) {
-        zombie2.setVelocityX(10)
+    if (gameOver) {
+        console.log("game over")
+        player.setTint(0x00ff00);
+        this.add.text(450, 200, "GAME OVER", { font: '65px Arial', fill: "#ff0044"})
+        this.add.text(510, 270, "your ending score is " + score, { font: '24px Arial', fill: "#313638"})
+        this.physics.pause()
     }
+   // text = game.add.text(game.world.centerX, game.world.centerY, "- phaser -\nclick to remove", { font: "65px Arial", fill: "#ff0044", align: "center" });
+  //  text.anchor.setTo(0.5, 0.5)
 
-  /*  zombie1.setVelocityX(-100)
-    if (zombie1.x <= 600) {
-        zombie2.setVelocityX(-100)
-    } */
 }
 
 
